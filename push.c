@@ -1,82 +1,41 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 #include "monty.h"
 
 /**
- * get_push - function that pushes an element onto top of the stack
- * @stack: pointer to the top of the stack
- * @line_number: where the line number appears
- * @temp: Pointer to instruction
- * Description: 0. push, pall
- * Return: see below
- * 1. upon success, nothing
- * 2. upon fail, EXIT_FAILURE
+ * push - push element into the stack
+ * @stack: stack given by main
+ * @line_cnt: ammount of lines
+ *
+ * Return: void
  */
-void get_push(stack_t **stack, unsigned int line_number, char *temp)
+void push(stack_t **stack, unsigned int line_cnt)
 {
+	char *n = global.argument;
 
-	stack_t *new_top;
-
-	(void)line_number;
-
-	if (temp == NULL || _isdigit(temp) == 1)
+	if ((is_digit(n)) == 0)
 	{
-		fprintf(stderr, "L%d: usage: push integer\n", line_number);
-		fclose(file);
-		get_free(*stack);
-		exit(EXIT_FAILURE);
-		if (_isdigit(temp) == 1)
+		fprintf(stderr, "L%d: usage: push integer\n", line_cnt);
+		status = EXIT_FAILURE;
+		return;
+	}
+
+	if (global.data_struct == 1)
+	{
+		if (!add_node(stack, atoi(global.argument)))
 		{
-			fprintf(stderr, "L%d: usage: push integer\n", line_number);
-			fclose(file);
-			get_free(*stack);
-			exit(EXIT_FAILURE);
+			return;
+			status = EXIT_FAILURE;
 		}
 	}
-	new_top = malloc(sizeof(stack_t));
-	if (new_top == NULL)
+	else
 	{
-		fprintf(stderr, "Error: malloc failed\n");
-		fclose(file);
-		exit(EXIT_FAILURE);
-	}
-	new_top->n = atoi(temp);
-	new_top->next = NULL;
-	new_top->prev = NULL;
-	if (*stack)
-	{
-		new_top->next = *stack;
-		(*stack)->prev = new_top;
-		*stack = new_top;
-	}
-	*stack = new_top;
-}
-
-
-/**
- *  _isdigit - Finds if char is a digit or not
- *
- *  @str: Character passed in
- *
- *  Return: 1 for digit, 0 if not
- */
-
-int _isdigit(char *str)
-{
-
-	int i = 0;
-
-
-	if (str[i] == '-')
-	{
-		i++;
-	}
-	while (str[i] != '\0')
-	{
-		if (!isdigit(str[i]))
+		if (!queue_node(stack, atoi(global.argument)))
 		{
-			return (1);
+			return;
+			status = EXIT_FAILURE;
 		}
-		i++;
 	}
-
-	return (0);
 }
